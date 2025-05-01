@@ -143,24 +143,21 @@ void MitsubishiUART::update() {
     publish_on_update_ = false;
   }
 
-
-  if (!query_only_) {
-    // Request an update from the heatpump
-    // TODO: This isn't a problem *yet*, but sending all these packets every loop might start to cause some issues
-    // in
-    //       certain configurations or setups. We may want to consider only asking for certain packets on a rarer
-    //       cadence, depending on their utility (e.g. we dont need to check for errors every loop).
-    hp_bridge_.send_packet(
-        GetRequestPacket::get_settings_instance());  // Needs to be done before status packet for mode logic to work
-    if (in_discovery_ || run_state_received_) {
-      hp_bridge_.send_packet(GetRequestPacket::get_runstate_instance());
-    }
-
-    // TODO: pull out the items we actually need to query in query only mode
-    hp_bridge_.send_packet(GetRequestPacket::get_status_instance());
-    hp_bridge_.send_packet(GetRequestPacket::get_current_temp_instance());
-    hp_bridge_.send_packet(GetRequestPacket::get_error_info_instance());
+  // We still send these in query_only mode.
+  // Request an update from the heatpump
+  // TODO: This isn't a problem *yet*, but sending all these packets every loop might start to cause some issues
+  // in
+  //       certain configurations or setups. We may want to consider only asking for certain packets on a rarer
+  //       cadence, depending on their utility (e.g. we dont need to check for errors every loop).
+  hp_bridge_.send_packet(
+      GetRequestPacket::get_settings_instance());  // Needs to be done before status packet for mode logic to work
+  if (in_discovery_ || run_state_received_) {
+    hp_bridge_.send_packet(GetRequestPacket::get_runstate_instance());
   }
+
+  hp_bridge_.send_packet(GetRequestPacket::get_status_instance());
+  hp_bridge_.send_packet(GetRequestPacket::get_current_temp_instance());
+  hp_bridge_.send_packet(GetRequestPacket::get_error_info_instance());
 
   if (in_discovery_) {
     // After criteria met, exit discovery mode
