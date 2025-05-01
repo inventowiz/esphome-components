@@ -7,6 +7,9 @@ namespace mitsubishi_itp {
 void MitsubishiUART::control(const climate::ClimateCall &call) {
   SettingsSetRequestPacket set_request_packet = SettingsSetRequestPacket();
 
+  if(query_only_)
+    return;  // If we are in query only mode, don't send control requests
+
   // Apply fan settings
   // Prioritize a custom fan mode if it's set.
   if (call.get_custom_fan_mode().has_value()) {

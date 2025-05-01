@@ -256,9 +256,14 @@ void MitsubishiUART::process_packet(const SettingsSetRequestPacket &packet) {
 void MitsubishiUART::process_packet(const RemoteTemperatureSetRequestPacket &packet) {
   ESP_LOGV(TAG, "Processing %s", packet.to_string().c_str());
 
-  // Immediately respond to thermostat (to keep it happy), and we'll send this info
-  // to the heat pump in temperature_source_report()
-  ts_bridge_->send_packet(SetResponsePacket());
+  if (query_only_){
+    // Route the packet instead and let the HP respond
+    route_packet_(packet);
+  } else {
+    // Immediately respond to thermostat (to keep it happy), and we'll send this info
+    // to the heat pump in temperature_source_report()
+    ts_bridge_->send_packet(SetResponsePacket());
+  }
   alert_listeners_(packet);
 
   float t = packet.get_remote_temperature();

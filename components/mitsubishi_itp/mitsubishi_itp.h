@@ -77,6 +77,9 @@ class MitsubishiUART : public PollingComponent, public climate::Climate, public 
 
   // Button triggers
   void reset_filter_status();
+  
+  // Turns on or off update only mode (no control)
+  void query_only_mode(const bool query_only) { query_only_ = query_only; }
 
   // Turns on or off Kumo emulation mode
   void set_enhanced_mhk_support(const bool supports) { enhanced_mhk_support_ = supports; }
@@ -172,6 +175,9 @@ class MitsubishiUART : public PollingComponent, public climate::Climate, public 
   std::string current_temperature_source_;
   uint32_t last_received_temperature_ = millis();
   bool temperature_source_timeout_ = false;  // Has the current source timed out?
+
+  // holds true if we are in query only mode (no control updates)
+  bool query_only_ = false;
 
   // used to track whether to support/handle the enhanced MHK protocol packets
   bool enhanced_mhk_support_ = false;
