@@ -109,9 +109,11 @@ be about `update_interval` late from their actual time.  Generally the update in
 */
 void MitsubishiUART::update() {
   // TODO: Temporarily wait 5 seconds on startup to help with viewing logs
+  /*
   if (millis() < 5000) {
     return;
   }
+  */
 
   // If we're not yet connected, send off a connection request (we'll check again next update)
   if (!hp_connected_) {
